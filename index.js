@@ -17,7 +17,6 @@ app.get('/login/', (_, res) => {
 app.get('/test/', async (req, res) => {
   const targetURL = req.query.URL;
 
-  // TODO: Заранее установить в систему chromium
   const browser = await puppeteer.launch({
     headless: 'new',
   })
