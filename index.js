@@ -22,6 +22,8 @@ app.get('/test/', async (req, res) => {
     args: ['--no-sandbox', '--disable-setuid-sandbox'],
   })
 
+  console.log(targetURL)
+
   const page = await browser.newPage();
   await page.goto(targetURL, { waitUntil: 'networkidle2' });
 
