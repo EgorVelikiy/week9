@@ -19,27 +19,29 @@ app.get('/test/', async (req, res) => {
 
   const browser = await puppeteer.launch({
     headless: 'new',
+    args: ['--no-sandbox', '--disable-setuid-sandbox'],
   })
 
   const page = await browser.newPage();
   await page.goto(targetURL, { waitUntil: 'networkidle2' });
 
+  await page.waitForSelector('#bt');
   await page.click('#bt');
 
   await page.waitForFunction(() => {
     const input = document.querySelector('#inp');
     return input.value;
-  }, { timeout: 1000 });
+  }, { timeout: 5000 });
 
   const result = await page.evaluate(() => {
     return document.querySelector('#inp').value;
   });
 
   await browser.close();
-
+  res.type('text/plain');
   res.send(result);
 });
 
-const PORT = 443;
-
+const PORT = process.env.PORT || 3000;
 app.listen(PORT);
+
