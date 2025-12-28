@@ -1,5 +1,6 @@
 const express = require('express');
 const puppeteer = require('puppeteer');
+const cheerio = require('cheerio');
 
 const app = express();
 
@@ -17,30 +18,14 @@ app.get('/login/', (_, res) => {
 app.get('/test/', async (req, res) => {
   const targetURL = req.query.URL;
 
-  const browser = await puppeteer.launch({
-    headless: true,
-    args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage'],
-  });
+  const response = await axios.get(targetURL);
+  const html = response.data;
 
+  const $ = cheerio.load(html);
 
-  console.log(targetURL)
+  // Берём значение из инпута с id="inp"
+  const result = $('#inp').val() || '';
 
-  const page = await browser.newPage();
-  await page.goto(targetURL, { waitUntil: 'networkidle2' });
-
-  await page.waitForSelector('#bt');
-  await page.click('#bt');
-
-  await page.waitForFunction(() => {
-    const input = document.querySelector('#inp');
-    return input.value;
-  }, { timeout: 5000 });
-
-  const result = await page.evaluate(() => {
-    return document.querySelector('#inp').value;
-  });
-
-  await browser.close();
   res.type('text/plain');
   res.send(result);
 });
