@@ -18,9 +18,11 @@ app.get('/test/', async (req, res) => {
   const targetURL = req.query.URL;
 
   const browser = await puppeteer.launch({
-    headless: 'new',
+    headless: true,
+    executablePath: '/usr/bin/chromium-browser',
     args: ['--no-sandbox', '--disable-setuid-sandbox'],
-  })
+  });
+
 
   console.log(targetURL)
 
