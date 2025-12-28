@@ -4,7 +4,7 @@ const cheerio = require('cheerio');
 
 const app = express();
 
-app.use((req, res, next) => {
+app.use((_req, res, next) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', '*');
@@ -17,13 +17,12 @@ app.get('/login/', (_, res) => {
 
 app.get('/test/', async (req, res) => {
   const targetURL = req.query.URL;
-
+  console.log(targetURL)
   const response = await axios.get(targetURL);
   const html = response.data;
 
   const $ = cheerio.load(html);
 
-  // Берём значение из инпута с id="inp"
   const result = $('#inp').val() || '';
 
   res.type('text/plain');
